@@ -1,129 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Refocus</title>
-<style>
-  body {
-    margin: 0;
-    font-family: "Orbitron", sans-serif;
-    background: linear-gradient(180deg, #050a14, #0d1b2a);
-    color: #d0eaff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    padding-top: 20px;
-  }
-
-  h1 {
-    letter-spacing: 2px;
-    margin-bottom: 15px;
-    color: #00ffff;
-  }
-
-  .camera {
-    position: relative;
-    width: 360px;
-    height: 240px;
-    border: 2px solid #00ffff;
-    border-radius: 12px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.9);
-    box-shadow: 0 0 30px #00ffff40;
-    margin-bottom: 15px;
-  }
-
-  .layer {
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:3em;
-    opacity:0;
-    transition: opacity 0.3s ease, filter 0.3s ease;
-  }
-
-  /* Glitch animation */
-  .glitch {
-    animation: glitch 0.5s;
-  }
-
-  @keyframes glitch {
-    0% { transform: translate(0px,0px) skew(0deg); opacity:1; }
-    20% { transform: translate(-4px,3px) skew(-3deg); opacity:0.9; }
-    40% { transform: translate(4px,-3px) skew(2deg); opacity:0.8; }
-    60% { transform: translate(-3px,4px) skew(-2deg); opacity:0.9; }
-    80% { transform: translate(2px,-2px) skew(1deg); opacity:0.95; }
-    100% { transform: translate(0px,0px) skew(0deg); opacity:1; }
-  }
-
-  input[type="range"] {
-    width: 300px;
-    accent-color: #00ffff;
-    margin-top: 10px;
-  }
-
-  .code-box {
-    margin-top: 10px;
-  }
-
-  input[type="text"] {
-    padding: 8px;
-    border-radius: 5px;
-    border: none;
-    outline: none;
-    text-align: center;
-    font-size: 1em;
-    background: #0d1b2a;
-    color: #d0eaff;
-  }
-
-  button {
-    padding: 8px 14px;
-    margin-left: 10px;
-    background: #00bcd4;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-
-  button:hover {
-    background: #00a0ba;
-  }
-
-  .msg {
-    margin-top: 10px;
-    font-size: 1em;
-  }
-
-  .timer {
-    margin-top: 10px;
-    font-size: 1.1em;
-    color: #ff8c42;
-  }
-
-  .level-menu {
-    margin-top: 15px;
-  }
-
-  .level-menu button {
-    margin: 2px;
-    font-size: 0.9em;
-  }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1> REFOCUS </h1>
+<h1>REFOCUS</h1>
 
 <div class="camera" id="camera"></div>
 <div class="timer" id="timer">Time: 60</div>
@@ -132,150 +17,16 @@
 <div class="code-box">
   <input type="text" id="code" placeholder="Enter answer...">
   <button id="submit">Submit</button>
+  <button id="hint">Hint</button>
 </div>
 
 <div class="msg" id="msg"></div>
+<div class="score" id="score">Score: 0</div>
 <div class="level-menu" id="level-menu"></div>
 
-<script>
-const camera = document.getElementById("camera");
-const focusSlider = document.getElementById("focus");
-const codeInput = document.getElementById("code");
-const submitBtn = document.getElementById("submit");
-const msg = document.getElementById("msg");
-const timerEl = document.getElementById("timer");
-const levelMenu = document.getElementById("level-menu");
-
-const totalLevels = 4;
-let level = 0;
-let timer;
-let currentLayers = [];
-
-// Helper: random number 0-9
-function randomNumber() { return Math.floor(Math.random()*10); }
-// Helper: pick random symbol
-function randomSymbol() { const syms = ["+", "-", "*", "△","◎"]; return syms[Math.floor(Math.random()*syms.length)]; }
-
-// Generate multi-layer puzzle
-function generateLevel() {
-  const a = randomNumber();
-  const b = randomNumber();
-  const op = randomSymbol();
-  let answer;
-
-  // Compute numeric answer for simple operators
-  if(op=="+") answer = a+b;
-  else if(op=="-") answer = a-b;
-  else if(op=="*") answer = a*b;
-  else answer = a+b; // fallback for symbols, just sum
-
-  return {
-    layers: [
-      { text: a.toString(), visibleAt:[0,25] },
-      { text: op, visibleAt:[20,50] },
-      { text: b.toString(), visibleAt:[40,75] },
-      { text:"?", visibleAt:[70,100] } // final symbol layer
-    ],
-    answer: answer.toString(),
-    hint:"Combine the layers using the operator to find the answer.",
-    time:30+Math.floor(Math.random()*30)
-  };
-}
-
-const levels = Array.from({length: totalLevels}, generateLevel);
-
-// Load level
-function loadLevel(idx) {
-  clearInterval(timer);
-  camera.innerHTML="";
-  codeInput.value="";
-  focusSlider.value=0;
-
-  camera.classList.add("glitch");
-  setTimeout(()=>camera.classList.remove("glitch"),500);
-
-  msg.textContent = levels[idx].hint;
-  startTimer(levels[idx].time);
-
-  const layerElems = [];
-  levels[idx].layers.forEach(layer=>{
-    const div=document.createElement("div");
-    div.className="layer";
-    div.textContent=layer.text;
-    camera.appendChild(div);
-    layerElems.push({elem:div,data:layer});
-  });
-  updateFocus();
-  return layerElems;
-}
-
-// Timer
-function startTimer(seconds){
-  let timeLeft=seconds;
-  timerEl.textContent=`Time: ${timeLeft}`;
-  timer=setInterval(()=>{
-    timeLeft--;
-    timerEl.textContent=`Time: ${timeLeft}`;
-    if(timeLeft<=0){
-      clearInterval(timer);
-      msg.textContent="⏰ Time's up! Try again.";
-    }
-  },1000);
-}
-
-// Update layers
-function updateFocus(){
-  const val=parseInt(focusSlider.value);
-  currentLayers.forEach(({elem,data})=>{
-    const [min,max]=data.visibleAt;
-    elem.style.opacity = (val>=min && val<=max)?1:0;
-    elem.style.filter = (val>=min && val<=max)? "blur(0px)":"blur(2px)";
-  });
-}
-
-focusSlider.addEventListener("input",updateFocus);
-
-// Submit answer
-submitBtn.addEventListener("click",()=>{
-  if(timer===undefined) return;
-  const ans=codeInput.value.trim();
-  if(ans==levels[level].answer){
-    clearInterval(timer);
-    msg.textContent="✔️ Correct! Moving to next level...";
-    level++;
-    if(level<levels.length){
-      setTimeout(()=>{currentLayers=loadLevel(level)},500);
-    } else{
-      msg.textContent="🎉 You restored all memories! The future is clear.";
-      camera.innerHTML="<div class='layer' style='opacity:1;color:#00ffff;font-size:1.5em;'>END OF TRANSMISSION</div>";
-      focusSlider.disabled=true;
-      codeInput.disabled=true;
-      submitBtn.disabled=true;
-      timerEl.textContent="";
-    }
-  } else{
-    msg.textContent="❌ Incorrect. Try again.";
-  }
-});
-
-// Level menu
-function createLevelMenu(){
-  levelMenu.innerHTML="";
-  levels.forEach((lvl,idx)=>{
-    const btn=document.createElement("button");
-    btn.textContent=`Level ${idx+1}`;
-    btn.addEventListener("click",()=>{
-      level=idx;
-      currentLayers=loadLevel(level);
-    });
-    levelMenu.appendChild(btn);
-  });
-}
-
-// Initialize
-currentLayers=loadLevel(level);
-createLevelMenu();
-</script>
+<script src="levels.js"></script>
+<script src="audio.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,86 @@
+body {
+  margin:0;
+  font-family:"Orbitron",sans-serif;
+  background: linear-gradient(180deg, #050a14, #0d1b2a);
+  color:#d0eaff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  min-height:100vh;
+  padding-top:20px;
+}
+h1 {
+  letter-spacing:2px;
+  margin-bottom:15px;
+  color:#00ffff;
+}
+.camera {
+  position:relative;
+  width:360px;
+  height:240px;
+  border:2px solid #00ffff;
+  border-radius:12px;
+  overflow:hidden;
+  background: rgba(0,0,0,0.9);
+  box-shadow: 0 0 30px #00ffff40;
+  margin-bottom:15px;
+}
+.layer {
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:3em;
+  opacity:0;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+.glitch {
+  animation: glitch 0.5s;
+}
+@keyframes glitch {
+  0% { transform: translate(0px,0px) skew(0deg); opacity:1; }
+  20% { transform: translate(-4px,3px) skew(-3deg); opacity:0.9; }
+  40% { transform: translate(4px,-3px) skew(2deg); opacity:0.8; }
+  60% { transform: translate(-3px,4px) skew(-2deg); opacity:0.9; }
+  80% { transform: translate(2px,-2px) skew(1deg); opacity:0.95; }
+  100% { transform: translate(0px,0px) skew(0deg); opacity:1; }
+}
+input[type="range"] {
+  width:300px;
+  accent-color:#00ffff;
+  margin-top:10px;
+}
+.code-box {
+  margin-top:10px;
+}
+input[type="text"] {
+  padding:8px;
+  border-radius:5px;
+  border:none;
+  outline:none;
+  text-align:center;
+  font-size:1em;
+  background:#0d1b2a;
+  color:#d0eaff;
+}
+button {
+  padding:8px 14px;
+  margin-left:5px;
+  background:#00bcd4;
+  border:none;
+  border-radius:5px;
+  color:white;
+  cursor:pointer;
+  transition: background 0.3s;
+}
+button:hover { background:#00a0ba; }
+.msg { margin-top:10px; font-size:1em; }
+.timer { margin-top:10px; font-size:1.1em; color:#ff8c42; }
+.score { margin-top:5px; font-size:1.1em; color:#9cff00; }
+.level-menu { margin-top:15px; }
+.level-menu button { margin:2px; font-size:0.9em; }
