@@ -1,19 +1,26 @@
 # Refocus
 
-**Refocus** is a futuristic camera puzzle game where you solve visual mysteries by adjusting a focus slider to reveal hidden symbols.  
-Built for **Hack Club Milkyway Roulette**.
+Refocus is a futuristic puzzle game where players focus on layered clues to solve number and operator puzzles. The game features multi-layered puzzles, hints, score tracking, sound effects, glitch transitions, a timer, and a level menu.
 
-### How to Play
-1. Move the **focus slider** left and right.
-2. Watch as different layers appear or vanish.
-3. Type the hidden number and hit **Submit**.
-4. Clear all levels to restore the lost memories of the future.
+## How to Play
+1. Adjust the **focus slider** to reveal layers in the camera.
+2. Combine the visible layers to compute the answer.
+3. Enter the answer in the input box and press **Submit**.
+4. Use the **Hint** button if you need a clue.
+5. Select levels from the **Level Menu** or progress sequentially.
+6. Score points for correct answers and try to solve all levels before time runs out.
 
-### Tech
-- HTML  
-- CSS  
-- JavaScript (no frameworks)
+## Features
+- Multi-layered puzzles
+- Focus-dependent clues
+- Hint system
+- Score tracking
+- Glitch transition animation
+- Countdown timer
+- Level selection menu
+- Futuristic neon UI with blurred layers
+- Sound effects (correct/wrong/glitch)
 
-### Credits
-Created by Serena Ni  
-Inspired by the theme: *Camera • Interface • Futuristic Puzzle*
+## Credits
+- Game developed by Serena Ni
+- Fonts: Orbitron
