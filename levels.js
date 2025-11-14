@@ -1,4 +1,4 @@
-// Puzzle generation logic
+// puzzle generation logic
 const totalLevels = 5;
 
 function randomNumber() { return Math.floor(Math.random()*10); }
