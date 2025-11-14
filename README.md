@@ -19,7 +19,6 @@ Refocus is a futuristic puzzle game where players focus on layered clues to solv
 - Countdown timer
 - Level selection menu
 - Futuristic neon UI with blurred layers
-- Sound effects (correct/wrong/glitch)
 
 ## Credits
 - Game developed by Serena Ni
